@@ -15,7 +15,7 @@ class TrueOnlineSarsaLambda(td_control_algorithms.CompoundMultiStepMethod):
             done = False
             Rsum = 0
             psi = self.action_value_function.feature_vector(S, A)
-            e = np.zeros([self.action_value_function.num_tiles * self.env.action_space.n])
+            e = np.zeros(self.action_value_function.theta.size)
             Q_old = 0
             while not done:
                 if show_env:
@@ -29,11 +29,10 @@ class TrueOnlineSarsaLambda(td_control_algorithms.CompoundMultiStepMethod):
                 Q = np.dot(psi, self.action_value_function.theta)
                 Q_prime = np.dot(psi_prime, self.action_value_function.theta)
                 delta = R + self.gamma * Q_prime - Q
-                e = self.gamma * self.lambda_ * e + psi - self.alpha * self.gamma * self.lambda_ * np.dot(e,
-                                                                                                                    psi) * psi
+                e = self.gamma * self.lambda_ * e + psi - self.alpha * self.gamma * self.lambda_ * np.dot(e, psi) * psi
 
                 self.action_value_function.theta = self.action_value_function.theta + self.alpha * (
-                delta + Q - Q_old) * e - self.alpha * (Q - Q_old) * psi
+                    delta + Q - Q_old) * e - self.alpha * (Q - Q_old) * psi
                 Q_old = Q_prime
                 psi = psi_prime
                 A = Anext

@@ -17,7 +17,6 @@ class Qlearning(td_control_algorithms.AtomicMultiStepMethod):
                     self.env.render()
                 Snext, R, done, info = self.env.step(A)
                 Rsum += R
-                # Anext = random.randint(0,2)
                 Anext = self.epsilon_greedy_action(Snext)
                 self.action_value_function.update(S, A, self.alpha * (
                 R + self.gamma * np.max(self.action_value_function.action_values(Snext)) - self.action_value_function.value(S,A)))

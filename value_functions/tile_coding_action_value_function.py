@@ -1,5 +1,5 @@
-import tile_coding.tiles3 as tiles3
-from tile_coding.action_value_function import AbstractActionValueFunction
+import value_functions.tiles3 as tiles3
+from value_functions.action_value_function import AbstractActionValueFunction
 import numpy as np
 import random
 

@@ -18,7 +18,6 @@ class QSigma(td_control_algorithms.AtomicMultiStepMethod):
             A[0] = self.epsilon_greedy_action(S[0])
             Q = [0]*(self.n+1)
             Q[0] = self.action_value_function.value(S[0], A[0])
-            R = 0
             Rsum = 0
             T = float("inf")
             t = 0
@@ -31,7 +30,6 @@ class QSigma(td_control_algorithms.AtomicMultiStepMethod):
                     if show_env:
                         self.env.render()
                     Snext, Rnext, done, info = self.env.step(A[t % (self.n+1)])
-                    # Rnext, Snext = self.mdp.do_action(S[t % (self.n+1)], A[t % (self.n+1)])
                     S[(t+1) % (self.n+1)] = Snext
                     Rsum += Rnext
                     if done:  # If we are in the terminal state

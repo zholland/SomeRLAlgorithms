@@ -11,3 +11,6 @@ class AbstractActionValueFunction(metaclass=abc.ABCMeta):
 
     def update(self, S, A, new_value):
         """"""
+
+    def feature_vector(self, S, A):
+        """"""

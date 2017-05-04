@@ -4,14 +4,17 @@ import numpy as np
 
 
 def main():
-    env = gym.make('MountainCar-v0')
+    env = gym.make('WindyGridworld-v0')
+
     agent = td.RLSolutionMethod.factory(
-        method_type=td.QSigma.__name__,
+        method_type=td.TrueOnlineSarsaLambda.__name__,
         env=env,
-        learning_rate=0.9,
-        scale_inputs=True)
-    agent.do_learning(num_episodes=500,
-                      target_return=-110.0,
+        learning_rate=0.5,
+        epsilon=0.1,
+        lambda_=0.5)
+
+    agent.do_learning(num_episodes=10000,
+                      target_return=-10.0,
                       target_window=10)
     print(np.mean(agent.episode_return))
 

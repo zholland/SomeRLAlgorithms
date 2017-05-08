@@ -3,15 +3,14 @@ import numpy as np
 import td_control_algorithms
 
 
-class TrueOnlineSarsaLambda(td_control_algorithms.CompoundMultiStepMethod):
-    def __init__(self, env, action_value_function, alpha, epsilon=0.0, epsilon_decay_factor=1.0, gamma=1.0,
-                 lambda_=0.0):
-        super().__init__(env, action_value_function, alpha, epsilon, epsilon_decay_factor, gamma, lambda_)
+class TrueOnlineSarsaLambda(td_control_algorithms.CompoundMultiStepMethodWithTraces):
+    def __init__(self, env, action_value_function, alpha, policy, gamma=1.0, lambda_=0.0):
+        super().__init__(env, action_value_function, alpha, policy, None, gamma, lambda_)
 
     def do_learning(self, num_episodes, target_return, target_window, show_env=False):
         for episodeNum in range(num_episodes):
             S = self.env.reset()
-            A = self.epsilon_greedy_action(S)
+            A = self.target_policy.select_action(S)
             done = False
             Rsum = 0
             psi = self.action_value_function.feature_vector(S, A)
@@ -22,7 +21,7 @@ class TrueOnlineSarsaLambda(td_control_algorithms.CompoundMultiStepMethod):
                     self.env.render()
                 Snext, R, done, info = self.env.step(A)
                 Rsum += R
-                Anext = self.epsilon_greedy_action(Snext)
+                Anext = self.target_policy.select_action(Snext)
 
                 psi_prime = self.action_value_function.feature_vector(Snext, Anext)
 
@@ -37,7 +36,7 @@ class TrueOnlineSarsaLambda(td_control_algorithms.CompoundMultiStepMethod):
                 psi = psi_prime
                 A = Anext
 
-            self.epsilon = self.epsilon * self.epsilon_decay_factor
+            self.target_policy.adjust_policy()
             self.episode_return.append(Rsum)
             if episodeNum >= target_window and np.mean(
                     self.episode_return[episodeNum - target_window:episodeNum]) > target_return:

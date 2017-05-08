@@ -7,13 +7,13 @@ def main():
     env = gym.make('WindyGridworld-v0')
 
     agent = td.RLSolutionMethod.factory(
-        method_type=td.TrueOnlineSarsaLambda.__name__,
+        method_type=td.ExpectedSarsa,
         env=env,
         learning_rate=0.5,
         epsilon=0.1,
         lambda_=0.5)
 
-    agent.do_learning(num_episodes=10000,
+    agent.do_learning(num_episodes=100,
                       target_return=-10.0,
                       target_window=10)
     print(np.mean(agent.episode_return))
